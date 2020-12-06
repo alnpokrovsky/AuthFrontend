@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, Validators} from '@angular/forms';
+import {FormControl, Validators, FormGroup, AbstractControl} from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -8,9 +8,12 @@ import {FormControl, Validators} from '@angular/forms';
 })
 export class LoginComponent {
 
-  emailFormControl = new FormControl('', [
-    Validators.required,
-    Validators.email,
-  ]);
+  signin: FormGroup = new FormGroup({
+    email: new FormControl('', [Validators.email, Validators.required ]),
+    password: new FormControl('', [Validators.required, Validators.min(3) ])
+  });
+  hide = true;
+  get emailInput(): AbstractControl { return this.signin.controls.email; }
+  get passwordInput(): AbstractControl { return this.signin.controls.password; }
 
 }

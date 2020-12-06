@@ -6,7 +6,6 @@ import { AppComponent } from './app.component';
 import { HttpClientModule, HttpClientXsrfModule } from "@angular/common/http";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from '@components/login/login.component';
-import { HeaderComponent } from './components/header/header.component';
 import { MaterialModule } from './material.module';
 
 
@@ -14,7 +13,6 @@ import { MaterialModule } from './material.module';
   declarations: [
     AppComponent,
     LoginComponent,
-    HeaderComponent
   ],
   imports: [
     MaterialModule,
