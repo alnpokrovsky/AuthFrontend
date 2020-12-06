@@ -12,7 +12,9 @@ export class LoginComponent {
     email: new FormControl('', [Validators.email, Validators.required ]),
     password: new FormControl('', [Validators.required, Validators.min(3) ])
   });
-  hide = true;
+  
+  hidePassword = true;
+
   get emailInput(): AbstractControl { return this.signin.controls.email; }
   get passwordInput(): AbstractControl { return this.signin.controls.password; }
 

@@ -25,6 +25,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
+import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
 
 @NgModule({
   imports: [
@@ -53,6 +54,7 @@ import { MatTreeModule } from '@angular/material/tree';
     MatProgressBarModule,
     MatTabsModule,
     MatTooltipModule,
+    MatPasswordStrengthModule,
   ],
   exports: [
     FormsModule, ReactiveFormsModule,
@@ -80,6 +82,7 @@ import { MatTreeModule } from '@angular/material/tree';
     MatProgressBarModule,
     MatTabsModule,
     MatTooltipModule,
+    MatPasswordStrengthModule,
   ]
 })
 export class MaterialModule {}
