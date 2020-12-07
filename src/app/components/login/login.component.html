@@ -3,7 +3,7 @@
 </mat-toolbar>
 
 <mat-tab-group animationDuration="0ms">
-    <mat-tab label="Login">
+    <mat-tab label="Sign In">
         <form [formGroup]="signin" class="example-form">
             <mat-form-field class="example-full-width">
                 <mat-label>Email</mat-label>
@@ -24,10 +24,14 @@
                 <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
                 <mat-hint *ngIf="!passwordInput.value">Enter your password</mat-hint>
             </mat-form-field>
+            <button mat-flat-button color="primary" 
+                (click) = "login()">
+                Login
+            </button>
         </form>
     </mat-tab>
 
-    <mat-tab label="Registration">
+    <mat-tab label="Sign Up">
         <!--password input filed-->
         <mat-form-field appearance="outline" style="width: 100%" [color]="passwordComponent.color">
             <mat-label>Password</mat-label>
