@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl, Validators, FormGroup, AbstractControl} from '@angular/forms';
 import { AuthService } from '@services/auth.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import { NONE_TYPE } from '@angular/compiler';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,13 @@ export class LoginComponent {
     password: new FormControl('', [Validators.required, Validators.min(3) ])
   });
 
+  signup: FormGroup = new FormGroup({
+    email: new FormControl('', [Validators.email, Validators.required ]),
+    password: new FormControl('', [Validators.required, Validators.min(3) ]),
+    firstName: new FormControl('', []),
+    lastName: new FormControl('', []),
+  });
+
   hidePassword = true;
 
   get emailInput(): AbstractControl { return this.signin.controls.email; }
@@ -27,12 +35,31 @@ export class LoginComponent {
 
   login() {
     if (this.signin.valid) {
-      this.authService.login({
-        email: this.emailInput.value,
-        password: this.passwordInput.value
-      }).subscribe(
+      this.authService.login(
+        this.emailInput.value,
+        this.passwordInput.value
+      ).subscribe(
         res => console.log(res),
         err => this.snackBar.open(err.statusText, 'hide'),
+      );
+    } else {
+      this.snackBar.open('input error', 'hide');
+    }
+  }
+
+  register() {
+    if (this.signup.valid) {
+      this.authService.signup({
+        id: 0,
+        username: this.signup.controls.email.value,
+        password: this.signup.controls.password.value,
+        firstName: this.signup.controls.firstName.value,
+        lastName: this.signup.controls.lastName.value
+      }).subscribe(
+        res => console.log(res),
+        err => err.status === 410
+          ? this.snackBar.open('Already exists', 'hide')
+          : this.snackBar.open(err.statusText, 'hide'),
       );
     } else {
       this.snackBar.open('input error', 'hide');

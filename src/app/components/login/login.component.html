@@ -2,56 +2,95 @@
     <h1> Login </h1>
 </mat-toolbar>
 
-<mat-tab-group animationDuration="0ms">
+<mat-tab-group animationDuration="0ms" mat-align-tabs="center">
     <mat-tab label="Sign In">
-        <form [formGroup]="signin" class="example-form">
-            <mat-form-field class="example-full-width">
-                <mat-label>Email</mat-label>
-                <input matInput formControlName="email" 
-                    type="email" 
-                    placeholder="pat@example.com"
-                    required>
-                <mat-error *ngIf="emailInput.hasError('email') && !emailInput.hasError('required')">
-                    Please enter a valid email address</mat-error>
-                <mat-error *ngIf="emailInput.hasError('required')">
-                    Email is <strong>required</strong></mat-error>
-            </mat-form-field>
-            <mat-form-field class="example-full-width">
-                <mat-label>Password</mat-label>
-                <input matInput formControlName="password" 
-                    [type]="hidePassword ? 'password' : 'text'" 
-                    required>
-                <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-                <mat-hint *ngIf="!passwordInput.value">Enter your password</mat-hint>
-            </mat-form-field>
-            <button mat-flat-button color="primary" 
-                (click) = "login()">
-                Login
-            </button>
-        </form>
+        <mat-card>
+            <mat-card-content>
+                <form [formGroup]="signin" class="example-form">
+                    <mat-form-field class="example-full-width">
+                        <mat-label>Email</mat-label>
+                        <input matInput formControlName="email" 
+                            type="email" 
+                            placeholder="pat@example.com"
+                            required>
+                        <mat-error *ngIf="emailInput.hasError('email') && !emailInput.hasError('required')">
+                            Please enter a valid email address</mat-error>
+                        <mat-error *ngIf="emailInput.hasError('required')">
+                            Email is <strong>required</strong></mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="example-full-width">
+                        <mat-label>Password</mat-label>
+                        <input matInput formControlName="password" 
+                            [type]="hidePassword ? 'password' : 'text'" 
+                            required>
+                        <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                        <mat-hint *ngIf="!passwordInput.value">Enter your password</mat-hint>
+                    </mat-form-field>
+                </form>
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-button color="primary" 
+                    (click) = "login()"> Login
+                </button>
+            </mat-card-actions>
+        </mat-card>
     </mat-tab>
 
     <mat-tab label="Sign Up">
-        <!--password input filed-->
-        <mat-form-field appearance="outline" style="width: 100%" [color]="passwordComponent.color">
-            <mat-label>Password</mat-label>
-            <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-            <input matInput #password
-                [type]="hidePassword ? 'password' : 'text'"
-                required
-                placeholder="Password">
-            <mat-hint align="end" aria-live="polite">
-            {{password.value.length}} / {{passwordComponent.max}}
-            </mat-hint>
-        </mat-form-field>
-        <!--@angular-material-extensions/password-strength's main component-->
-        <mat-password-strength #passwordComponent
-                                [password]="password.value">
-        </mat-password-strength>
-        <!--Password's strength info-->
-        <mat-password-strength-info
-            *ngIf="!hidePassword"
-            [passwordComponent]="passwordComponent">
-        </mat-password-strength-info>
+        <mat-card>
+            <mat-card-content>
+                <form [formGroup]="signup" class="example-form">
+                    <mat-form-field class="example-full-width">
+                        <mat-label>First Name</mat-label>
+                        <input matInput formControlName="firstName" 
+                            type="input" 
+                            placeholder="Ivan">
+                    </mat-form-field>
+                    <mat-form-field class="example-full-width">
+                        <mat-label>Last Name</mat-label>
+                        <input matInput formControlName="lastName" 
+                            type="input" 
+                            placeholder="Ivanov">
+                    </mat-form-field>
+                    <mat-form-field class="example-full-width">
+                        <mat-label>Email</mat-label>
+                        <input matInput formControlName="email" 
+                            type="email" 
+                            placeholder="pat@example.com"
+                            required>
+                        <mat-error *ngIf="emailInput.hasError('email') && !emailInput.hasError('required')">
+                            Please enter a valid email address</mat-error>
+                        <mat-error *ngIf="emailInput.hasError('required')">
+                            Email is <strong>required</strong></mat-error>
+                    </mat-form-field>
+                    <!--password input filed-->
+                    <mat-form-field class="example-full-width" appearance="outline" [color]="passwordComponent.color">
+                        <mat-label>Password</mat-label>
+                        <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                        <input matInput formControlName="password" #password
+                            [type]="hidePassword ? 'password' : 'text'"
+                            required
+                            placeholder="Password">
+                        <mat-hint align="end" aria-live="polite">
+                        {{password.value.length}} / {{passwordComponent.max}}
+                        </mat-hint>
+                    </mat-form-field>
+                    <!--@angular-material-extensions/password-strength's main component-->
+                    <mat-password-strength #passwordComponent
+                                            [password]="password.value">
+                    </mat-password-strength>
+                    <!--Password's strength info-->
+                    <mat-password-strength-info
+                        *ngIf="!hidePassword"
+                        [passwordComponent]="passwordComponent">
+                    </mat-password-strength-info>
+                </form>
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-button color="primary" 
+                    (click) = "register()"> Register
+                </button>
+            </mat-card-actions>
+        </mat-card>
     </mat-tab>
 </mat-tab-group>

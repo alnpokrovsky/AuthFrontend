@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '@entities/user';
-import { Login } from '@entities/login';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -18,8 +17,24 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
-  public login(login: Login): Observable<User> {
-    return this.http.post<User>('/api/login', login, httpOptions);
+  public login(username: string, password: string): Observable<string> {
+    const httpOptionsWorkaround = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/x-www-form-urlencoded',
+      }),
+    };
+
+    return this.http.post<string>('/api/login',
+      encodeURI(`username=${username}&password=${password}`),
+      httpOptionsWorkaround
+    );
+  }
+
+  public signup(user: User): Observable<User> {
+    return this.http.post<User>('/api/signup',
+      user,
+      httpOptions
+      );
   }
 
   // getUser(): Observable<User> {
