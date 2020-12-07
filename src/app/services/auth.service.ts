@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { share } from 'rxjs/operators';
 import { User } from '@entities/user';
 
 const httpOptions = {
@@ -15,18 +16,17 @@ const httpOptions = {
 })
 export class AuthService {
 
+  private authToken: string = sessionStorage.getItem('Authorization') ?? '';
+
   constructor(private http: HttpClient) { }
 
   public login(username: string, password: string): Observable<string> {
-    const httpOptionsWorkaround = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/x-www-form-urlencoded',
-      }),
-    };
-
-    return this.http.post<string>('/api/login',
-      encodeURI(`username=${username}&password=${password}`),
-      httpOptionsWorkaround
+    this.authToken = btoa(username + ':' + password);
+    const headers = new HttpHeaders({
+      Authorization: 'Basic ' + this.authToken
+    });
+    return this.http.get<string>('/api/user',
+      {headers}
     );
   }
 
@@ -34,15 +34,14 @@ export class AuthService {
     return this.http.post<User>('/api/signup',
       user,
       httpOptions
-      );
+    );
   }
 
-  // getUser(): Observable<User> {
-  //   return this.http.get<User>('/api/user', httpOptions);
-  // }
-
-  // createUser(user: User): Observable<User> {
-  //   return this.http.post<User>('/api/signup', user, httpOptions);
-  // }
+  getUser(): Observable<User> {
+    const headers = new HttpHeaders({
+      Authorization: 'Basic ' + this.authToken
+    });
+    return this.http.get<User>('/api/user', {headers});
+  }
 
 }

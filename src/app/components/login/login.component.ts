@@ -3,6 +3,7 @@ import {FormControl, Validators, FormGroup, AbstractControl} from '@angular/form
 import { AuthService } from '@services/auth.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import { NONE_TYPE } from '@angular/compiler';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,8 @@ export class LoginComponent {
 
   constructor(
     private authService: AuthService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router
   ) { }
 
   signin: FormGroup = new FormGroup({
@@ -39,7 +41,7 @@ export class LoginComponent {
         this.emailInput.value,
         this.passwordInput.value
       ).subscribe(
-        res => console.log(res),
+        ok => {console.log(ok); this.router.navigate(['/user']); },
         err => this.snackBar.open(err.statusText, 'hide'),
       );
     } else {

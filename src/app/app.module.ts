@@ -7,6 +7,7 @@ import { HttpClientModule, HttpClientXsrfModule, HttpInterceptor, HttpHandler, H
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from '@components/login/login.component';
 import { MaterialModule } from './material.module';
+import { UserInfoComponent } from './components/user-info/user-info.component';
 
 
 @Injectable()
@@ -24,6 +25,7 @@ export class XhrInterceptor implements HttpInterceptor {
   declarations: [
     AppComponent,
     LoginComponent,
+    UserInfoComponent,
   ],
   imports: [
     MaterialModule,
