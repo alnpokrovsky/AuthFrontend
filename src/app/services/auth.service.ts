@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { share } from 'rxjs/operators';
 import { User } from '@entities/user';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+
+const AUTH = 'Authorization';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -16,25 +19,62 @@ const httpOptions = {
 })
 export class AuthService {
 
-  private authToken: string = sessionStorage.getItem('Authorization') ?? '';
+  private authToken: string = sessionStorage.getItem(AUTH) ?? '';
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private snackBar: MatSnackBar,
+  ) { }
 
-  public login(username: string, password: string): Observable<string> {
-    this.authToken = btoa(username + ':' + password);
-    const headers = new HttpHeaders({
-      Authorization: 'Basic ' + this.authToken
-    });
-    return this.http.get<string>('/api/user',
-      {headers}
-    );
+  public isLogedIn(): boolean {
+    return this.authToken !== '';
   }
 
-  public signup(user: User): Observable<User> {
-    return this.http.post<User>('/api/signup',
-      user,
-      httpOptions
-    );
+  public async login(
+    username: string,
+    password: string,
+    stayLogedIn: boolean = true
+  ): Promise<boolean> {
+    try {
+      const authToken = btoa(username + ':' + password);
+      const headers = new HttpHeaders({
+        Authorization: 'Basic ' + authToken
+      });
+      // check that we can login
+      await this.http.get<string>('/api/user', {headers}).toPromise();
+      this.authToken = authToken;
+      if (stayLogedIn) {
+        sessionStorage.setItem(AUTH, authToken);
+      }
+      this.router.navigate(['/user']);
+      return true;
+    } catch (error) {
+      // there'l be error if we cannot login
+      this.snackBar.open(error.statusText, 'hide');
+      return false;
+    }
+  }
+
+  public logout(): void {
+    this.authToken = '';
+    sessionStorage.removeItem(AUTH);
+
+  }
+
+  public async signup(user: User): Promise<boolean> {
+    try {
+      await this.http.post<User>('/api/signup', user, httpOptions);
+      return this.login(user.username, user.password);
+    } catch (error) {
+      // there'l be error if we cannot create user
+      if (error.status === 410) {
+        this.snackBar.open('User already exists', 'hide');
+      } else {
+        this.snackBar.open(error.statusText, 'hide');
+      }
+      return false;
+    }
   }
 
   getUser(): Observable<User> {

@@ -1,21 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import {FormControl, Validators, FormGroup, AbstractControl} from '@angular/forms';
+import { Component } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '@services/auth.service';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import { NONE_TYPE } from '@angular/compiler';
-import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  selector: 'app-auth',
+  templateUrl: './auth.component.html',
+  styleUrls: ['./auth.component.scss']
 })
-export class LoginComponent {
+export class AuthComponent {
 
   constructor(
     private authService: AuthService,
-    private snackBar: MatSnackBar,
-    private router: Router
+    private snackBar: MatSnackBar
   ) { }
 
   signin: FormGroup = new FormGroup({
@@ -31,38 +28,32 @@ export class LoginComponent {
   });
 
   hidePassword = true;
+  stayLogedIn = true;
 
   get emailInput(): AbstractControl { return this.signin.controls.email; }
   get passwordInput(): AbstractControl { return this.signin.controls.password; }
 
-  login() {
+  async login(): Promise<void> {
     if (this.signin.valid) {
-      this.authService.login(
+      await this.authService.login(
         this.emailInput.value,
-        this.passwordInput.value
-      ).subscribe(
-        ok => {console.log(ok); this.router.navigate(['/user']); },
-        err => this.snackBar.open(err.statusText, 'hide'),
+        this.passwordInput.value,
+        this.stayLogedIn
       );
     } else {
       this.snackBar.open('input error', 'hide');
     }
   }
 
-  register() {
+  async register(): Promise<void> {
     if (this.signup.valid) {
-      this.authService.signup({
+      await this.authService.signup({
         id: 0,
         username: this.signup.controls.email.value,
         password: this.signup.controls.password.value,
         firstName: this.signup.controls.firstName.value,
         lastName: this.signup.controls.lastName.value
-      }).subscribe(
-        res => console.log(res),
-        err => err.status === 410
-          ? this.snackBar.open('Already exists', 'hide')
-          : this.snackBar.open(err.statusText, 'hide'),
-      );
+      });
     } else {
       this.snackBar.open('input error', 'hide');
     }

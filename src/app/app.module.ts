@@ -3,17 +3,19 @@ import { NgModule, Injectable } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HttpClientModule, HttpClientXsrfModule, HttpInterceptor, HttpHandler, HttpRequest, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { HttpClientModule, HttpClientXsrfModule, HttpInterceptor, HttpHandler, HttpRequest, HTTP_INTERCEPTORS, HttpEvent } from "@angular/common/http";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LoginComponent } from '@components/login/login.component';
 import { MaterialModule } from './material.module';
 import { UserInfoComponent } from './components/user-info/user-info.component';
+import { AuthComponent } from './components/auth/auth.component';
+import { Observable } from 'rxjs';
+import { HeaderComponent } from './components/header/header.component';
 
 
 @Injectable()
 export class XhrInterceptor implements HttpInterceptor {
 
-  intercept(req: HttpRequest<any>, next: HttpHandler) {
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const xhr = req.clone({
       headers: req.headers.set('X-Requested-With', 'XMLHttpRequest')
     });
@@ -24,8 +26,9 @@ export class XhrInterceptor implements HttpInterceptor {
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
     UserInfoComponent,
+    AuthComponent,
+    HeaderComponent,
   ],
   imports: [
     MaterialModule,

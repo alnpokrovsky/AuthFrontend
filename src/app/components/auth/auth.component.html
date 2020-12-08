@@ -1,13 +1,9 @@
-<mat-toolbar class = "header" color="primary">
-    <h1> Login </h1>
-</mat-toolbar>
-
 <mat-tab-group animationDuration="0ms" mat-align-tabs="center">
     <mat-tab label="Sign In">
         <mat-card>
             <mat-card-content>
-                <form [formGroup]="signin" class="example-form">
-                    <mat-form-field class="example-full-width">
+                <form [formGroup]="signin">
+                    <mat-form-field>
                         <mat-label>Email</mat-label>
                         <input matInput formControlName="email" 
                             type="email" 
@@ -18,7 +14,7 @@
                         <mat-error *ngIf="emailInput.hasError('required')">
                             Email is <strong>required</strong></mat-error>
                     </mat-form-field>
-                    <mat-form-field class="example-full-width">
+                    <mat-form-field>
                         <mat-label>Password</mat-label>
                         <input matInput formControlName="password" 
                             [type]="hidePassword ? 'password' : 'text'" 
@@ -32,6 +28,9 @@
                 <button mat-button color="primary" 
                     (click) = "login()"> Login
                 </button>
+                <mat-checkbox [(ngModel)]="stayLogedIn">
+                    Stay loged in
+                </mat-checkbox>
             </mat-card-actions>
         </mat-card>
     </mat-tab>
@@ -39,20 +38,20 @@
     <mat-tab label="Sign Up">
         <mat-card>
             <mat-card-content>
-                <form [formGroup]="signup" class="example-form">
-                    <mat-form-field class="example-full-width">
+                <form [formGroup]="signup">
+                    <mat-form-field>
                         <mat-label>First Name</mat-label>
                         <input matInput formControlName="firstName" 
                             type="input" 
                             placeholder="Ivan">
                     </mat-form-field>
-                    <mat-form-field class="example-full-width">
+                    <mat-form-field>
                         <mat-label>Last Name</mat-label>
                         <input matInput formControlName="lastName" 
                             type="input" 
                             placeholder="Ivanov">
                     </mat-form-field>
-                    <mat-form-field class="example-full-width">
+                    <mat-form-field>
                         <mat-label>Email</mat-label>
                         <input matInput formControlName="email" 
                             type="email" 
@@ -64,7 +63,7 @@
                             Email is <strong>required</strong></mat-error>
                     </mat-form-field>
                     <!--password input filed-->
-                    <mat-form-field class="example-full-width" appearance="outline" [color]="passwordComponent.color">
+                    <mat-form-field appearance="outline" [color]="passwordComponent.color">
                         <mat-label>Password</mat-label>
                         <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
                         <input matInput formControlName="password" #password
