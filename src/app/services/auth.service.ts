@@ -59,7 +59,7 @@ export class AuthService {
   public logout(): void {
     this.authToken = '';
     sessionStorage.removeItem(AUTH);
-
+    this.router.navigate(['/auth']);
   }
 
   public async signup(user: User): Promise<boolean> {

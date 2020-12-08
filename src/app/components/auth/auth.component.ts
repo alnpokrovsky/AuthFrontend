@@ -22,7 +22,7 @@ export class AuthComponent {
 
   signup: FormGroup = new FormGroup({
     email: new FormControl('', [Validators.email, Validators.required ]),
-    password: new FormControl('', [Validators.required, Validators.min(3) ]),
+    password: new FormControl('', [Validators.required, Validators.min(1) ]),
     firstName: new FormControl('', []),
     lastName: new FormControl('', []),
   });
@@ -30,14 +30,11 @@ export class AuthComponent {
   hidePassword = true;
   stayLogedIn = true;
 
-  get emailInput(): AbstractControl { return this.signin.controls.email; }
-  get passwordInput(): AbstractControl { return this.signin.controls.password; }
-
   async login(): Promise<void> {
     if (this.signin.valid) {
       await this.authService.login(
-        this.emailInput.value,
-        this.passwordInput.value,
+        this.signin.controls.email.value,
+        this.signin.controls.password.value,
         this.stayLogedIn
       );
     } else {
