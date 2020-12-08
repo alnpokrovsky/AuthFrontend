@@ -28,6 +28,7 @@ import { MatTreeModule } from '@angular/material/tree';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   imports: [
@@ -57,7 +58,7 @@ import { MatPasswordStrengthModule } from '@angular-material-extensions/password
     MatTabsModule,
     MatTooltipModule,
     MatSnackBarModule,
-    MatDatepickerModule,
+    MatDatepickerModule, MatNativeDateModule,
     MatPasswordStrengthModule,
   ],
   exports: [
@@ -87,7 +88,7 @@ import { MatPasswordStrengthModule } from '@angular-material-extensions/password
     MatTabsModule,
     MatTooltipModule,
     MatSnackBarModule,
-    MatDatepickerModule,
+    MatDatepickerModule, MatNativeDateModule,
     MatPasswordStrengthModule,
   ]
 })

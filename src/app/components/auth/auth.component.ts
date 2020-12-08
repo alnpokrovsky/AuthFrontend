@@ -10,10 +10,18 @@ import { AuthService } from '@services/auth.service';
 })
 export class AuthComponent {
 
+  birthdayMinLimit: Date;
+  birthdayMaxLimit: Date;
+
   constructor(
     private authService: AuthService,
     private snackBar: MatSnackBar
-  ) { }
+  ) {
+    // Set the minimum to January 1st 100 years in the past
+    const currentYear = new Date().getFullYear();
+    this.birthdayMinLimit = new Date(currentYear - 100, 0, 1);
+    this.birthdayMaxLimit = new Date(currentYear - 2, 12, 31);
+  }
 
   signin: FormGroup = new FormGroup({
     email: new FormControl('', [Validators.email, Validators.required ]),
@@ -25,6 +33,7 @@ export class AuthComponent {
     password: new FormControl('', [Validators.required, Validators.min(1) ]),
     firstName: new FormControl('', []),
     lastName: new FormControl('', []),
+    birthday: new FormControl('', []),
   });
 
   hidePassword = true;
