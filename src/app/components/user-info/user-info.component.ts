@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '@services/auth.service';
+import { UserService } from '@services/user.service';
 
 @Component({
   selector: 'app-user-info',
@@ -13,7 +13,7 @@ export class UserInfoComponent implements OnInit {
   birthdayMaxLimit: Date;
 
   constructor(
-    private authService: AuthService
+    private userService: UserService
   ) {
     // Set the minimum to January 1st 100 years in the past
     const currentYear = new Date().getFullYear();
@@ -32,7 +32,8 @@ export class UserInfoComponent implements OnInit {
   hidePassword = true;
 
   ngOnInit(): void {
-    this.authService.getUser().subscribe( (user) => {
+    this.userService.getUser().subscribe( (user) => {
+      console.log(user);
       this.info.controls.email.setValue(user.username);
       this.info.controls.firstName.setValue(user.firstName);
       this.info.controls.lastName.setValue(user.lastName);
@@ -40,7 +41,12 @@ export class UserInfoComponent implements OnInit {
   }
 
   updateInfo(): void {
-
+    this.userService.updateUser({
+      firstName: this.info.controls.firstName.value,
+      lastName: this.info.controls.lastName.value,
+      username: this.info.controls.email.value,
+      password: this.info.controls.password.value
+    });
   }
 
 }

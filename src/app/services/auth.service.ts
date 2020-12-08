@@ -19,16 +19,34 @@ const httpOptions = {
 })
 export class AuthService {
 
-  private authToken: string = sessionStorage.getItem(AUTH) ?? '';
+  static authToken: string = sessionStorage.getItem(AUTH) ?? '';
 
   constructor(
     private http: HttpClient,
     private router: Router,
     private snackBar: MatSnackBar,
-  ) { }
+  ) {
+    // need to check cached token
+    if (AuthService.authToken !== '') {
+      this.checkToken(AuthService.authToken).subscribe(
+        ok => {},
+        err => this.logout()
+      );
+    }
+   }
 
   public isLogedIn(): boolean {
-    return this.authToken !== '';
+    return AuthService.authToken !== '';
+  }
+
+  private checkToken(
+    token: string
+  ): Observable<any> {
+      const headers = new HttpHeaders({
+        Authorization: 'Basic ' + token
+      });
+      // check that we can login
+      return this.http.get<string>('/api/user', {headers});
   }
 
   public async login(
@@ -36,28 +54,23 @@ export class AuthService {
     password: string,
     stayLogedIn: boolean = true
   ): Promise<boolean> {
+    const authToken = btoa(username + ':' + password);
     try {
-      const authToken = btoa(username + ':' + password);
-      const headers = new HttpHeaders({
-        Authorization: 'Basic ' + authToken
-      });
-      // check that we can login
-      await this.http.get<string>('/api/user', {headers}).toPromise();
-      this.authToken = authToken;
+      await this.checkToken(authToken).toPromise()
+      AuthService.authToken = authToken;
       if (stayLogedIn) {
         sessionStorage.setItem(AUTH, authToken);
       }
       this.router.navigate(['/user']);
       return true;
     } catch (error) {
-      // there'l be error if we cannot login
       this.snackBar.open(error.statusText, 'hide');
       return false;
     }
   }
 
   public logout(): void {
-    this.authToken = '';
+    AuthService.authToken = '';
     sessionStorage.removeItem(AUTH);
     this.router.navigate(['/auth']);
   }
@@ -75,13 +88,6 @@ export class AuthService {
       }
       return false;
     }
-  }
-
-  getUser(): Observable<User> {
-    const headers = new HttpHeaders({
-      Authorization: 'Basic ' + this.authToken
-    });
-    return this.http.get<User>('/api/user', {headers});
   }
 
 }

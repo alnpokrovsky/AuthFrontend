@@ -54,7 +54,6 @@ export class AuthComponent {
   async register(): Promise<void> {
     if (this.signup.valid) {
       await this.authService.signup({
-        id: 0,
         username: this.signup.controls.email.value,
         password: this.signup.controls.password.value,
         firstName: this.signup.controls.firstName.value,
