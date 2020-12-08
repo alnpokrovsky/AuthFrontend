@@ -15,7 +15,6 @@ export class AuthGuard implements CanActivateChild {
         if (!this.authService.isLogedIn()) {
             return true;
         } else {
-            console.log('here');
             this.router.navigate(['/']);
             return false;
         }
@@ -34,7 +33,6 @@ export class AuthGuard implements CanActivateChild {
         next: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
     ): boolean {
-        console.log(next.url);
         if (next.url.length > 0) {
             if (next.url[0].path === 'auth') {
                 return this.isLoginAwailable();

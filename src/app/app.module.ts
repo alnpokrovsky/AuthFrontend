@@ -11,6 +11,7 @@ import { AuthComponent } from './components/auth/auth.component';
 import { Observable } from 'rxjs';
 import { HeaderComponent } from './components/header/header.component';
 import { AuthGuard } from '@guards/auth.guard';
+import { AuthInterceptorService } from '@services/auth.interceptor.service';
 
 
 @Injectable()
@@ -41,6 +42,7 @@ export class XhrInterceptor implements HttpInterceptor {
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true },
     AuthGuard,
   ],
   bootstrap: [AppComponent]

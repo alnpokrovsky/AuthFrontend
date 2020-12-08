@@ -1,8 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { User } from '@entities/user';
 import { Observable } from 'rxjs';
-import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,20 +11,18 @@ export class UserService {
 
   constructor(
     private http: HttpClient,
+    private snackBar: MatSnackBar,
   ) { }
 
   getUser(): Observable<User> {
-    const headers = new HttpHeaders({
-      Authorization: 'Basic ' + AuthService.authToken
-    });
-    return this.http.get<User>('/api/user', {headers});
+    return this.http.get<User>('/api/user');
   }
 
-  updateUser(info: User): Observable<User> {
-    const headers = new HttpHeaders({
-      Authorization: 'Basic ' + AuthService.authToken
-    });
-    return this.http.put<User>('/api/user', info, {headers});
+  updateUser(info: User): void {
+    this.http.put<User>('/api/user', info).subscribe(
+      ok => this.snackBar.open('Success', 'hide'),
+      err => this.snackBar.open(err.statusText, 'hide')
+    );
   }
 
 }

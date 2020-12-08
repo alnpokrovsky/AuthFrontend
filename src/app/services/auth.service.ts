@@ -7,13 +7,6 @@ import { Router } from '@angular/router';
 
 const AUTH = 'Authorization';
 
-const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type':  'application/json',
-  }),
-  withCredentials: true,
-};
-
 @Injectable({
   providedIn: 'root'
 })
@@ -42,7 +35,7 @@ export class AuthService {
   private checkToken(
     token: string
   ): Observable<any> {
-      const headers = new HttpHeaders({
+      let headers = new HttpHeaders({
         Authorization: 'Basic ' + token
       });
       // check that we can login
@@ -54,9 +47,10 @@ export class AuthService {
     password: string,
     stayLogedIn: boolean = true
   ): Promise<boolean> {
-    const authToken = btoa(username + ':' + password);
+    let authToken = btoa(username + ':' + password);
+    console.log(authToken);
     try {
-      await this.checkToken(authToken).toPromise()
+      await this.checkToken(authToken).toPromise();
       AuthService.authToken = authToken;
       if (stayLogedIn) {
         sessionStorage.setItem(AUTH, authToken);
@@ -77,8 +71,8 @@ export class AuthService {
 
   public async signup(user: User): Promise<boolean> {
     try {
-      await this.http.post<User>('/api/signup', user, httpOptions);
-      return this.login(user.username, user.password);
+      await this.http.post<User>('/api/signup', user).toPromise();
+      return await this.login(user.username, user.password);
     } catch (error) {
       // there'l be error if we cannot create user
       if (error.status === 410) {
