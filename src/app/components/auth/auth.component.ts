@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '@services/auth.service';
 
@@ -41,10 +41,13 @@ export class AuthComponent {
 
   async login(): Promise<void> {
     if (this.signin.valid) {
-      await this.authService.login(
+      this.authService.login(
         this.signin.controls.email.value,
         this.signin.controls.password.value,
         this.stayLogedIn
+      ).subscribe(
+        ok => {},
+        err => this.snackBar.open(err.statusText, 'hide')
       );
     } else {
       this.snackBar.open('input error', 'hide');
@@ -53,12 +56,15 @@ export class AuthComponent {
 
   async register(): Promise<void> {
     if (this.signup.valid) {
-      await this.authService.signup({
+      this.authService.signup({
         username: this.signup.controls.email.value,
         password: this.signup.controls.password.value,
         firstName: this.signup.controls.firstName.value,
         lastName: this.signup.controls.lastName.value
-      });
+      }).subscribe(
+        ok => {},
+        err => this.snackBar.open(err.statusText, 'hide')
+      );
     } else {
       this.snackBar.open('input error', 'hide');
     }

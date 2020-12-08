@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { User } from '@entities/user';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { Observable, pipe } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 const AUTH = 'Authorization';
 
@@ -12,16 +13,16 @@ const AUTH = 'Authorization';
 })
 export class AuthService {
 
-  static authToken: string = sessionStorage.getItem(AUTH) ?? '';
+  private _authToken: string = sessionStorage.getItem(AUTH) ?? '';
+  public get authToken(): string { return this._authToken; }
 
   constructor(
     private http: HttpClient,
     private router: Router,
-    private snackBar: MatSnackBar,
   ) {
     // need to check cached token
-    if (AuthService.authToken !== '') {
-      this.checkToken(AuthService.authToken).subscribe(
+    if (this.authToken !== '') {
+      this.checkToken().subscribe(
         ok => {},
         err => this.logout()
       );
@@ -29,59 +30,43 @@ export class AuthService {
    }
 
   public isLogedIn(): boolean {
-    return AuthService.authToken !== '';
+    return this.authToken !== '';
   }
 
-  private checkToken(
-    token: string
-  ): Observable<any> {
-      let headers = new HttpHeaders({
-        Authorization: 'Basic ' + token
-      });
+  private checkToken(): Observable<any> {
       // check that we can login
-      return this.http.get<string>('/api/user', {headers});
+      return this.http.get<string>('/api/user');
   }
 
-  public async login(
+  public login(
     username: string,
     password: string,
     stayLogedIn: boolean = true
-  ): Promise<boolean> {
-    let authToken = btoa(username + ':' + password);
-    console.log(authToken);
-    try {
-      await this.checkToken(authToken).toPromise();
-      AuthService.authToken = authToken;
+  ): Observable<any> {
+    return this.http.post<any>(
+      '/api/signin', {username, password}
+    ).pipe(map( result => {
+      this._authToken = 'Bearer ' + result.token;
       if (stayLogedIn) {
-        sessionStorage.setItem(AUTH, authToken);
+        sessionStorage.setItem(AUTH, this.authToken);
       }
       this.router.navigate(['/user']);
-      return true;
-    } catch (error) {
-      this.snackBar.open(error.statusText, 'hide');
-      return false;
-    }
+      return result;
+    }));
   }
 
   public logout(): void {
-    AuthService.authToken = '';
+    this._authToken = '';
     sessionStorage.removeItem(AUTH);
     this.router.navigate(['/auth']);
   }
 
-  public async signup(user: User): Promise<boolean> {
-    try {
-      await this.http.post<User>('/api/signup', user).toPromise();
-      return await this.login(user.username, user.password);
-    } catch (error) {
-      // there'l be error if we cannot create user
-      if (error.status === 410) {
-        this.snackBar.open('User already exists', 'hide');
-      } else {
-        this.snackBar.open(error.statusText, 'hide');
-      }
-      return false;
-    }
+  public signup(user: User): Observable<any> {
+    return this.http.post<User>(
+      '/api/signup', user
+    ).pipe(map( result => {
+      return this.login(user.username, user.password);
+    }));
   }
 
 }
