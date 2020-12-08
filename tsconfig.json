@@ -6,6 +6,7 @@
       "@components/*": ["src/app/components/*"],
       "@entities/*": ["src/app/entities/*"],
       "@services/*": ["src/app/services/*"],
+      "@guards/*": ["src/app/guards/*"],
       "@assets/*": ["src/assets/*"],
     },
     "baseUrl": "./",

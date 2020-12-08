@@ -10,6 +10,7 @@ import { UserInfoComponent } from './components/user-info/user-info.component';
 import { AuthComponent } from './components/auth/auth.component';
 import { Observable } from 'rxjs';
 import { HeaderComponent } from './components/header/header.component';
+import { AuthGuard } from '@guards/auth.guard';
 
 
 @Injectable()
@@ -38,7 +39,10 @@ export class XhrInterceptor implements HttpInterceptor {
     HttpClientXsrfModule,
     BrowserAnimationsModule
   ],
-  providers: [{ provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true }],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true },
+    AuthGuard,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
