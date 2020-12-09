@@ -12,6 +12,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     ): Observable<HttpEvent<any>> {
         const token = sessionStorage.getItem(CACH_AUTH);
         if (token != null) {
+            console.log(token);
             const authReq = req.clone({
                 headers: new HttpHeaders({
                     'Content-Type': 'application/json',

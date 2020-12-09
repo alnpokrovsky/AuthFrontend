@@ -60,7 +60,8 @@ export class AuthComponent {
         username: this.signup.controls.email.value,
         password: this.signup.controls.password.value,
         firstName: this.signup.controls.firstName.value,
-        lastName: this.signup.controls.lastName.value
+        lastName: this.signup.controls.lastName.value,
+        birthday: this.signup.controls.birthday.value,
       }).subscribe(
         ok => {},
         err => this.snackBar.open(err.statusText, 'hide')
