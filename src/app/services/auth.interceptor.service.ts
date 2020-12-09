@@ -1,8 +1,8 @@
 import { HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 
-export const CACH_AUTH = 'Authorization';
 
 @Injectable()
 export class AuthInterceptorService implements HttpInterceptor {
@@ -10,7 +10,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     intercept(
         req: HttpRequest<any>, next: HttpHandler
     ): Observable<HttpEvent<any>> {
-        const token = sessionStorage.getItem(CACH_AUTH);
+        const token = AuthService.authToken;
         if (token != null) {
             console.log(token);
             const authReq = req.clone({

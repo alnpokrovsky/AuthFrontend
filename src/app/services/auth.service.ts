@@ -4,37 +4,52 @@ import { User } from '@entities/user';
 import { Router } from '@angular/router';
 import { Observable, pipe } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CACH_AUTH } from './auth.interceptor.service';
+
+/// name of cach field
+export const CACH_AUTH = 'Authorization';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private authToken: string|null = sessionStorage.getItem(CACH_AUTH);
+  static authToken: string|null = sessionStorage.getItem(CACH_AUTH);
 
   constructor(
     private http: HttpClient,
     private router: Router,
   ) {
     // need to check cached token
-    if (this.authToken != null) {
-      this.checkToken().subscribe(
+    this.checkToken();
+  }
+
+  /**
+   * We are loged in if token exists
+   */
+  public isLogedIn(): boolean {
+    return AuthService.authToken != null;
+  }
+
+  /**
+   * Check that we can login and token isn't corrupted.
+   * If we can't then logout
+   */
+  private checkToken(): void {
+    if (AuthService.authToken != null) {
+      this.http.get<string>('/api/user').subscribe(
         ok => {},
         err => this.logout()
       );
     }
-   }
-
-  public isLogedIn(): boolean {
-    return this.authToken != null;
   }
 
-  private checkToken(): Observable<any> {
-      // check that we can login
-      return this.http.get<string>('/api/user');
-  }
-
+  /**
+   * login: try to get authToken for user/passw.
+   * if success then save it
+   * @param username
+   * @param password
+   * @param stayLogedIn if we need to cach out authToken. default true
+   */
   public login(
     username: string,
     password: string,
@@ -43,9 +58,9 @@ export class AuthService {
     return this.http.post<any>(
       '/api/login', {username, password}
     ).pipe(map( result => {
-      this.authToken = 'Bearer ' + result.token;
+      AuthService.authToken = 'Bearer ' + result.token;
       if (stayLogedIn) {
-        sessionStorage.setItem(CACH_AUTH, this.authToken);
+        sessionStorage.setItem(CACH_AUTH, AuthService.authToken);
       }
       this.router.navigate(['/user']);
       return result;
@@ -53,7 +68,7 @@ export class AuthService {
   }
 
   public logout(): void {
-    this.authToken = null;
+    AuthService.authToken = null;
     sessionStorage.removeItem(CACH_AUTH);
     this.router.navigate(['/auth']);
   }
@@ -62,7 +77,8 @@ export class AuthService {
     return this.http.post<User>(
       '/api/signup', user
     ).pipe(map( result => {
-      return this.login(user.username, user.password);
+      this.login(user.username, user.password).subscribe();
+      return result;
     }));
   }
 

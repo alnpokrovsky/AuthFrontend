@@ -29,6 +29,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 
 @NgModule({
   imports: [
@@ -58,7 +59,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatTabsModule,
     MatTooltipModule,
     MatSnackBarModule,
-    MatDatepickerModule, MatNativeDateModule,
+    MatDatepickerModule, MatMomentDateModule,
     MatPasswordStrengthModule,
   ],
   exports: [
@@ -88,8 +89,11 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatTabsModule,
     MatTooltipModule,
     MatSnackBarModule,
-    MatDatepickerModule, MatNativeDateModule,
+    MatDatepickerModule, MatMomentDateModule,
     MatPasswordStrengthModule,
-  ]
+  ],
+  providers: [
+    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}},
+  ],
 })
 export class MaterialModule {}

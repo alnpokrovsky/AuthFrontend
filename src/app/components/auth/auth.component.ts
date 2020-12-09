@@ -39,7 +39,7 @@ export class AuthComponent {
   hidePassword = true;
   stayLogedIn = true;
 
-  async login(): Promise<void> {
+  login(): void {
     if (this.signin.valid) {
       this.authService.login(
         this.signin.controls.email.value,
@@ -54,7 +54,7 @@ export class AuthComponent {
     }
   }
 
-  async register(): Promise<void> {
+  register(): void {
     if (this.signup.valid) {
       this.authService.signup({
         username: this.signup.controls.email.value,
