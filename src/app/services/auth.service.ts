@@ -1,36 +1,33 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { User } from '@entities/user';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Observable, pipe } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-const AUTH = 'Authorization';
+import { CACH_AUTH } from './auth.interceptor.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private _authToken: string = sessionStorage.getItem(AUTH) ?? '';
-  public get authToken(): string { return this._authToken; }
+  private authToken: string|null = sessionStorage.getItem(CACH_AUTH);
 
   constructor(
     private http: HttpClient,
     private router: Router,
   ) {
     // need to check cached token
-    if (this.authToken !== '') {
+    if (this.authToken != null) {
       this.checkToken().subscribe(
         ok => {},
-        // err => this.logout()
+        err => this.logout()
       );
     }
    }
 
   public isLogedIn(): boolean {
-    return this.authToken !== '';
+    return this.authToken != null;
   }
 
   private checkToken(): Observable<any> {
@@ -46,9 +43,9 @@ export class AuthService {
     return this.http.post<any>(
       '/api/login', {username, password}
     ).pipe(map( result => {
-      this._authToken = 'Bearer ' + result.token;
+      this.authToken = 'Bearer ' + result.token;
       if (stayLogedIn) {
-        sessionStorage.setItem(AUTH, this.authToken);
+        sessionStorage.setItem(CACH_AUTH, this.authToken);
       }
       this.router.navigate(['/user']);
       return result;
@@ -56,8 +53,8 @@ export class AuthService {
   }
 
   public logout(): void {
-    this._authToken = '';
-    sessionStorage.removeItem(AUTH);
+    this.authToken = null;
+    sessionStorage.removeItem(CACH_AUTH);
     this.router.navigate(['/auth']);
   }
 
