@@ -24,7 +24,7 @@ export class AuthService {
     if (this.authToken !== '') {
       this.checkToken().subscribe(
         ok => {},
-        err => this.logout()
+        // err => this.logout()
       );
     }
    }
@@ -44,7 +44,7 @@ export class AuthService {
     stayLogedIn: boolean = true
   ): Observable<any> {
     return this.http.post<any>(
-      '/api/signin', {username, password}
+      '/api/login', {username, password}
     ).pipe(map( result => {
       this._authToken = 'Bearer ' + result.token;
       if (stayLogedIn) {
