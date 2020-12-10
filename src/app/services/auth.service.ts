@@ -5,15 +5,15 @@ import { Router } from '@angular/router';
 import { Observable, pipe } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-/// name of cach field
-export const CACH_AUTH = 'Authorization';
+/// name of cache field
+const CACHE_AUTH = 'Authorization';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  static authToken: string|null = sessionStorage.getItem(CACH_AUTH);
+  static authToken: string|null = sessionStorage.getItem(CACHE_AUTH);
 
   constructor(
     private http: HttpClient,
@@ -61,7 +61,7 @@ export class AuthService {
       console.log(result);
       AuthService.authToken = 'Bearer ' + result.token;
       if (stayLogedIn) {
-        sessionStorage.setItem(CACH_AUTH, AuthService.authToken);
+        sessionStorage.setItem(CACHE_AUTH, AuthService.authToken);
       }
       this.router.navigate(['/user']);
       return result;
@@ -70,7 +70,7 @@ export class AuthService {
 
   public logout(): void {
     AuthService.authToken = null;
-    sessionStorage.removeItem(CACH_AUTH);
+    sessionStorage.removeItem(CACHE_AUTH);
     this.router.navigate(['/auth']);
   }
 
