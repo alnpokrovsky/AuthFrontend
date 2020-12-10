@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { User } from '@entities/user';
 import { UserService } from '@services/user.service';
 
 @Component({
@@ -13,7 +15,8 @@ export class UserInfoComponent implements OnInit {
   birthdayMaxLimit: Date;
 
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private snackBar: MatSnackBar,
   ) {
     // Set the minimum to January 1st 100 years in the past
     const currentYear = new Date().getFullYear();
@@ -31,25 +34,39 @@ export class UserInfoComponent implements OnInit {
 
   hidePassword = true;
 
+  private updateFields(user: User) {
+    this.info.controls.email.setValue(user.username);
+    this.info.controls.firstName.setValue(user.firstName);
+    this.info.controls.lastName.setValue(user.lastName);
+    this.info.controls.birthday.setValue(user.birthday);
+  }
+
   ngOnInit(): void {
-    this.userService.getUser().subscribe( (user) => {
-      console.log(user);
-      this.info.controls.email.setValue(user.username);
-      this.info.controls.firstName.setValue(user.firstName);
-      this.info.controls.lastName.setValue(user.lastName);
-      this.info.controls.birthday.setValue(user.birthday);
-    });
+    this.userService.getUser().subscribe(
+      (user) => this.updateFields(user)
+    );
   }
 
   updateInfo(): void {
-    this.userService.updateUser({
-      firstName: this.info.controls.firstName.value,
-      lastName: this.info.controls.lastName.value,
-      birthday: this.info.controls.birthday.value,
-      username: this.info.controls.email.value,
-      password: this.info.controls.password.value
-    });
-    // console.log(this.info.controls.birthday.value);
+    if (this.info.valid) {
+      this.userService.updateUser({
+        firstName: this.info.controls.firstName.value,
+        lastName: this.info.controls.lastName.value,
+        birthday: this.info.controls.birthday.value,
+        username: this.info.controls.email.value,
+        password: this.info.controls.password.value
+      }).subscribe(
+        user => {
+          this.snackBar.open('Success', 'hide');
+          this.updateFields(user);
+        },
+        err => {
+          this.snackBar.open(err.status, 'hide')
+        }
+      )
+    } else {
+      this.snackBar.open('input error', 'hide');
+    }
   }
 
 }

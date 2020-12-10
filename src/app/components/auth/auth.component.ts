@@ -39,6 +39,22 @@ export class AuthComponent {
   hidePassword = true;
   stayLogedIn = true;
 
+  private showError(status: number) {
+    let text = "";
+    switch(status) {
+      case 401:
+        text = "Wrong email/password";
+        break;
+      case 410:
+        text = "User with this email already exists";
+        break;
+      default:
+        text = status.toString();
+        break;
+    }
+    this.snackBar.open(text, 'hide')
+  }
+
   login(): void {
     if (this.signin.valid) {
       this.authService.login(
@@ -47,7 +63,7 @@ export class AuthComponent {
         this.stayLogedIn
       ).subscribe(
         ok => {},
-        err => this.snackBar.open(err.statusText, 'hide')
+        err => this.showError(err.status)
       );
     } else {
       this.snackBar.open('input error', 'hide');
@@ -64,7 +80,7 @@ export class AuthComponent {
         birthday: this.signup.controls.birthday.value,
       }).subscribe(
         ok => {},
-        err => this.snackBar.open(err.statusText, 'hide')
+        err => this.showError(err.status)
       );
     } else {
       this.snackBar.open('input error', 'hide');

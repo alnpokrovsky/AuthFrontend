@@ -11,18 +11,14 @@ export class UserService {
 
   constructor(
     private http: HttpClient,
-    private snackBar: MatSnackBar,
   ) { }
 
   getUser(): Observable<User> {
     return this.http.get<User>('/api/user');
   }
 
-  updateUser(info: User): void {
-    this.http.put<User>('/api/user', info).subscribe(
-      ok => this.snackBar.open('Success', 'hide'),
-      err => this.snackBar.open(err.statusText, 'hide')
-    );
+  updateUser(info: User): Observable<User> {
+    return this.http.put<User>('/api/user', info);
   }
 
 }

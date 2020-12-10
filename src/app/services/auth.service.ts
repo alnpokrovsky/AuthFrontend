@@ -58,6 +58,7 @@ export class AuthService {
     return this.http.post<any>(
       '/api/login', {username, password}
     ).pipe(map( result => {
+      console.log(result);
       AuthService.authToken = 'Bearer ' + result.token;
       if (stayLogedIn) {
         sessionStorage.setItem(CACH_AUTH, AuthService.authToken);
