@@ -49,7 +49,7 @@ export class AuthComponent {
         text = "User with this email already exists";
         break;
       default:
-        text = status.toString();
+        text = 'Something went wrong (' + status + ')';
         break;
     }
     this.snackBar.open(text, 'hide')

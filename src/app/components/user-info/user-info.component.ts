@@ -61,7 +61,7 @@ export class UserInfoComponent implements OnInit {
           this.updateFields(user);
         },
         err => {
-          this.snackBar.open(err.status, 'hide')
+          this.snackBar.open('Something went wrong (' + err.status + ')', 'hide')
         }
       )
     } else {
